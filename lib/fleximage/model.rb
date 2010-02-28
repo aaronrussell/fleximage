@@ -108,7 +108,7 @@ module Fleximage
         end
         
         def self.has_store?
-          respond_to?(:columns) && (db_store? || image_directory)
+          respond_to?(:columns) && (db_store? || s3_store? || image_directory)
         end
         
         # validation callback
@@ -126,6 +126,9 @@ module Fleximage
         
         # Amazon S3 bucket where the master images are stored
         dsl_accessor :s3_bucket
+        
+        # Amazon S3 path
+        dsl_accessor :s3_path
         
         # Put uploads from different days into different subdirectories
         dsl_accessor :use_creation_date_based_directories, :default => true
@@ -289,6 +292,10 @@ module Fleximage
       #   @some_image.file_path #=> /var/www/myapp/uploaded_images/123.png
       def file_path
         "#{directory_path}/#{id}.#{extension}"
+      end
+      
+      def s3_key
+        "#{self.class.s3_path}/#{id}.#{self.class.image_storage_format}"
       end
 
       # Returns original format of the image if the image_format column exists
@@ -454,7 +461,7 @@ module Fleximage
         if self.class.db_store?
           !!image_file_data
         elsif self.class.s3_store?
-          AWS::S3::S3Object.exists?("#{id}.#{self.class.image_storage_format}", self.class.s3_bucket)
+          AWS::S3::S3Object.exists?(s3_key, self.class.s3_bucket)
         elsif self.class.file_store?
           File.exists?(file_path)
         end
@@ -502,7 +509,7 @@ module Fleximage
           
         elsif self.class.s3_store?
           # Load image from S3
-          filename = "#{id}.#{self.class.image_storage_format}"
+          filename = s3_key
           bucket   = self.class.s3_bucket
           
           if AWS::S3::S3Object.exists?(filename, bucket)
@@ -553,7 +560,7 @@ module Fleximage
         if self.class.db_store?
           update_attribute :image_file_data, nil unless frozen?
         elsif self.class.s3_store?
-          AWS::S3::S3Object.delete "#{id}.#{self.class.image_storage_format}", self.class.s3_bucket
+          AWS::S3::S3Object.delete s3_key, self.class.s3_bucket
         else
           File.delete(file_path) if File.exists?(file_path)
         end
@@ -615,7 +622,7 @@ module Fleximage
               
             elsif self.class.s3_store?
               blob = StringIO.new(@uploaded_image.to_blob)
-              AWS::S3::S3Object.store("#{id}.#{self.class.image_storage_format}", blob, self.class.s3_bucket)
+              AWS::S3::S3Object.store(s3_key, blob, self.class.s3_bucket)
               
             end
           end

@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{fleximage}
-  s.version = "1.0.3"
+  s.version = "1.0.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Alex Wayne", "Andrew White", "JJ Buckley", "Jason Lee", "Joshua Abbott", "Koji Ando", "Kouhei Sutou", "Lasse Jansen", "Lo\303\257c Guitaut", "Martin Vielsmaier", "Squeegy", "Vannoy"]
-  s.date = %q{2009-12-19}
+  s.authors = ["Alex Wayne", "Andrew White", "JJ Buckley", "Jason Lee", "Joshua Abbott", "Koji Ando", "Kouhei Sutou", "Lasse Jansen", "Lo\303\257c Guitaut", "Martin Vielsmaier", "Squeegy", "Vannoy", "ralph"]
+  s.date = %q{2010-02-28}
   s.description = %q{Fleximage is a Rails plugin that tries to make image uploading and rendering
 super easy.
 }
@@ -46,7 +46,6 @@ super easy.
      "lib/fleximage/operator/trim.rb",
      "lib/fleximage/operator/unsharp_mask.rb",
      "lib/fleximage/rmagick_image_patch.rb",
-     "lib/fleximage/string_patch.rb",
      "lib/fleximage/view.rb",
      "tasks/fleximage_tasks.rake",
      "test/fixtures/100x1.jpg",
@@ -154,7 +153,7 @@ super easy.
   s.homepage = %q{http://github.com/Squeegy/fleximage}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{Rails plugin for uploading images as resources, with support for resizing, text stamping, and other special effects.}
   s.test_files = [
     "test/mock_file.rb",
